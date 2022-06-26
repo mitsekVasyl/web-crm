@@ -44,3 +44,29 @@ def customers_list(request):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
 
         return Response(status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['GET', 'PUT', 'DELETE'])
+def customer_details(request, customer_id):
+    request_method = request.method
+    try:
+        customer = Customer.objects.get(pk=customer_id)
+    except Customer.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+
+    if request_method == 'GET':
+        serializer = CustomerSerializer(customer, context={'request': request})
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    elif request_method == 'PUT':
+        serializer = CustomerSerializer(customer, data=request.data, context={'request': request})
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    elif request_method == 'DELETE':
+        customer.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+

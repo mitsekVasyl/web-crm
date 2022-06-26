@@ -19,5 +19,6 @@ from customers import views as customers_views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/customers/', view=customers_views.customers_list, name='customers_list')
+    path('api/customers/', view=customers_views.customers_list, name='customers_list'),
+    path('api/customers/<int:customer_id>/', view=customers_views.customer_details, name='customer_details'),
 ]
